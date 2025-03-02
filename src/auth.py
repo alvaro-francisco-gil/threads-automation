@@ -33,31 +33,31 @@ class AuthHandler(BaseHTTPRequestHandler):
         return
 
 def get_access_token():
-    # Check if token cache exists
+    # Create a serializable token cache
+    cache = msal.SerializableTokenCache()
+    
+    # Check if token cache exists and load it
     if os.path.exists('token_cache.json'):
         with open('token_cache.json', 'r') as f:
             cache_data = f.read()
-            
-        # Create a serializable token cache
-        cache = msal.SerializableTokenCache()
-        if cache_data:
-            cache.deserialize(cache_data)
-        
-        app = msal.ConfidentialClientApplication(
-            client_id,
-            authority=f"https://login.microsoftonline.com/{tenant_id}",
-            client_credential=client_secret,
-            token_cache=cache
-        )
-        
-        accounts = app.get_accounts()
-        if accounts:
-            result = app.acquire_token_silent(scopes, account=accounts[0])
-            if result:
-                # Save updated token cache
-                with open('token_cache.json', 'w') as f:
-                    f.write(cache.serialize())
-                return result['access_token']
+            if cache_data:
+                cache.deserialize(cache_data)
+    
+    app = msal.ConfidentialClientApplication(
+        client_id,
+        authority=f"https://login.microsoftonline.com/{tenant_id}",
+        client_credential=client_secret,
+        token_cache=cache
+    )
+    
+    accounts = app.get_accounts()
+    if accounts:
+        result = app.acquire_token_silent(scopes, account=accounts[0])
+        if result:
+            # Save updated token cache
+            with open('token_cache.json', 'w') as f:
+                f.write(cache.serialize())
+            return result['access_token']
     
     # If no valid token in cache, get a new one
     app = msal.ConfidentialClientApplication(
