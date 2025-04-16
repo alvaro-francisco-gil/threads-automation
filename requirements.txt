@@ -1,5 +1,2 @@
 pythreads
-requests
-msal
 python-dotenv
-msal
