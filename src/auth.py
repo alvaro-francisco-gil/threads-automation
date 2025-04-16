@@ -45,7 +45,7 @@ def get_access_token():
     
     app = msal.ConfidentialClientApplication(
         client_id,
-        authority=f"https://login.microsoftonline.com/{tenant_id}",
+        authority=f"https://login.microsoftonline.com/common",
         client_credential=client_secret,
         token_cache=cache
     )
@@ -104,7 +104,7 @@ def get_access_token():
         print("No error reported but access_token is missing from the response")
         return None
 
-scopes = ["Tasks.Read", "Tasks.ReadWrite"]
+scopes = ["User.Read", "Tasks.Read", "Tasks.ReadWrite"]
 
 if __name__ == "__main__":
     token = get_access_token()
