@@ -1,3 +1,4 @@
 pythreads
 python-dotenv
 pandas
+matplotlib
